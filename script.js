@@ -7,10 +7,18 @@ let username = element("name"),
   email = element("email"),
   password = element("password"),
   dob = element("dob"),
-  tc = element("tc"),
-  form = element("form");
+  tc = element("terms"), // Fixed ID reference
+  form = element("registrationForm"),
+  registerBtn = element("registerBtn"),
+  usersTableBody = element("usersTableBody");
 
-let errormsg = classes("errormsg");
+// Error Messages
+const messages = {
+  name: "Username must be at least 3 characters long",
+  email: "Not a valid E-mail",
+  dob: "Your age must be between 18 and 55 to continue",
+  tc: "You must agree to the terms and conditions",
+};
 
 function verify(elem, message, condition) {
   if (condition) {
@@ -24,37 +32,18 @@ function verify(elem, message, condition) {
 }
 
 function checkDOB() {
-  let age = new Date().getFullYear() - new Date(dob.value).getFullYear();
+  let birthDate = new Date(dob.value);
+  let age = new Date().getFullYear() - birthDate.getFullYear();
   return age >= 18 && age <= 55;
 }
 
-const messages = {
-  name: "Username must be at least 3 characters long",
-  email: "Not a valid E-mail",
-  dob: "Your age must be between 18 and 55 to continue",
-  tc: "You must agree to the terms and conditions",
-};
+// Event Listeners
+username.addEventListener("input", () => verify(username, messages.name, username.value.length < 3));
+email.addEventListener("input", () => verify(email, messages.email, !(email.value.includes("@") && email.value.includes("."))));
+dob.addEventListener("click", () => element("datePickerModal").style.display = "block"); // Open Calendar Modal
+tc.addEventListener("change", () => verify(tc, messages.tc, !tc.checked));
 
-username.addEventListener("input", (e) => {
-  e.preventDefault();
-  verify(username, messages.name, username.value.length < 3);
-});
-
-email.addEventListener("input", (e) => {
-  e.preventDefault();
-  verify(email, messages.email, !(email.value.includes("@") && email.value.includes(".")));
-});
-
-dob.addEventListener("input", (e) => {
-  e.preventDefault();
-  verify(dob, messages.dob, !checkDOB());
-});
-
-tc.addEventListener("input", (e) => {
-  e.preventDefault();
-  verify(tc, messages.tc, !tc.checked);
-});
-
+// Create User Object
 function makeObject() {
   return {
     name: username.value,
@@ -65,36 +54,46 @@ function makeObject() {
   };
 }
 
+// Display Users Table
 function displayTable() {
-  let table = element("user-table");
-  let str = `<tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Password</th>
-                <th>Dob</th>
-                <th>Accepted terms?</th>
-             </tr>\n`;
-
-  user_entries.forEach((entry) => {
-    str += `<tr>
+  usersTableBody.innerHTML = "";
+  user_entries.forEach((entry, index) => {
+    let row = `<tr>
                 <td>${entry.name}</td>
                 <td>${entry.email}</td>
-                <td>${entry.password}</td>
                 <td>${entry.dob}</td>
-                <td>${entry.checked}</td>
-            </tr>\n`;
+                <td>${entry.checked ? "Yes" : "No"}</td>
+                <td><button onclick="deleteUser(${index})">Delete</button></td>
+              </tr>`;
+    usersTableBody.innerHTML += row;
   });
-
-  table.innerHTML = str;
 }
 
+// Delete User
+function deleteUser(index) {
+  user_entries.splice(index, 1);
+  localStorage.setItem("user_entries", JSON.stringify(user_entries));
+  displayTable();
+}
+
+// Form Submission
 form.addEventListener("submit", (e) => {
   e.preventDefault();
-  if (tc.checked) {
-    user_entries.push(makeObject());
-    localStorage.setItem("user_entries", JSON.stringify(user_entries));
-    displayTable();
+  if (!tc.checked) {
+    verify(tc, messages.tc, true);
+    return;
   }
+  user_entries.push(makeObject());
+  localStorage.setItem("user_entries", JSON.stringify(user_entries));
+  displayTable();
 });
 
+// Close Modals
+document.querySelectorAll(".close").forEach((btn) =>
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".modal").forEach((modal) => (modal.style.display = "none"));
+  })
+);
+
+// Initialize Table
 window.onload = displayTable;
