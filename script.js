@@ -24,9 +24,9 @@ function verify(elem, message, condition) {
 }
 
 function checkDOB() {
-  let birthDate = new Date(dob.value);
-  let today = new Date();
-  let age = today.getFullYear() - birthDate.getFullYear();
+  let birthDate = new Date(dob.value),
+    today = new Date(),
+    age = today.getFullYear() - birthDate.getFullYear();
 
   if (
     today.getMonth() < birthDate.getMonth() ||
@@ -74,23 +74,23 @@ function makeObject() {
 }
 
 function displayTable() {
-  let table = element("user-table");
-  let str = `<tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Password</th>
-                <th>Dob</th>
-                <th>Accepted terms?</th>
-             </tr>\n`;
+  let table = element("user-table"),
+    str = `<tr>
+             <th>Name</th>
+             <th>Email</th>
+             <th>Password</th>
+             <th>Dob</th>
+             <th>Accepted terms?</th>
+           </tr>\n`;
 
   if (user_entries.length > 0) {
     user_entries.forEach((entry) => {
       str += `<tr>
-                  <td>${entry.name}</td>
-                  <td>${entry.email}</td>
-                  <td>${entry.password}</td>
-                  <td>${entry.dob}</td>
-                  <td>${entry.checked ? "Yes" : "No"}</td>
+                <td>${entry.name}</td>
+                <td>${entry.email}</td>
+                <td>${entry.password}</td>
+                <td>${entry.dob}</td>
+                <td>${entry.checked ? "Yes" : "No"}</td>
               </tr>\n`;
     });
   } else {
@@ -106,7 +106,7 @@ form.addEventListener("submit", (e) => {
     user_entries.push(makeObject());
     localStorage.setItem("user_entries", JSON.stringify(user_entries));
     displayTable();
-    form.reset(); // Clears the form after submission
+    form.reset();
   } else {
     alert("Please fix errors before submitting.");
   }
