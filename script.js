@@ -24,7 +24,17 @@ function verify(elem, message, condition) {
 }
 
 function checkDOB() {
-  let age = new Date().getFullYear() - new Date(dob.value).getFullYear();
+  let birthDate = new Date(dob.value);
+  let today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+
+  if (
+    today.getMonth() < birthDate.getMonth() ||
+    (today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate())
+  ) {
+    age--;
+  }
+
   return age >= 18 && age <= 55;
 }
 
@@ -35,24 +45,22 @@ const messages = {
   tc: "You must agree to the terms and conditions",
 };
 
-username.addEventListener("input", (e) => {
-  e.preventDefault();
+username.addEventListener("input", () => {
   verify(username, messages.name, username.value.length < 3);
 });
 
-email.addEventListener("input", (e) => {
-  e.preventDefault();
+email.addEventListener("input", () => {
   verify(email, messages.email, !(email.value.includes("@") && email.value.includes(".")));
 });
 
-dob.addEventListener("input", (e) => {
-  e.preventDefault();
+dob.addEventListener("input", () => {
   verify(dob, messages.dob, !checkDOB());
 });
 
-tc.addEventListener("input", (e) => {
-  e.preventDefault();
-  verify(tc, messages.tc, !tc.checked);
+tc.addEventListener("change", () => {
+  if (!tc.checked) {
+    alert(messages.tc);
+  }
 });
 
 function makeObject() {
@@ -75,25 +83,32 @@ function displayTable() {
                 <th>Accepted terms?</th>
              </tr>\n`;
 
-  user_entries.forEach((entry) => {
-    str += `<tr>
-                <td>${entry.name}</td>
-                <td>${entry.email}</td>
-                <td>${entry.password}</td>
-                <td>${entry.dob}</td>
-                <td>${entry.checked}</td>
-            </tr>\n`;
-  });
+  if (user_entries.length > 0) {
+    user_entries.forEach((entry) => {
+      str += `<tr>
+                  <td>${entry.name}</td>
+                  <td>${entry.email}</td>
+                  <td>${entry.password}</td>
+                  <td>${entry.dob}</td>
+                  <td>${entry.checked ? "Yes" : "No"}</td>
+              </tr>\n`;
+    });
+  } else {
+    str += `<tr><td colspan="5" style="text-align:center;">No entries found</td></tr>`;
+  }
 
   table.innerHTML = str;
 }
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
-  if (tc.checked) {
+  if (tc.checked && checkDOB()) {
     user_entries.push(makeObject());
     localStorage.setItem("user_entries", JSON.stringify(user_entries));
     displayTable();
+    form.reset(); // Clears the form after submission
+  } else {
+    alert("Please fix errors before submitting.");
   }
 });
 
