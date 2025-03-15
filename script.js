@@ -24,17 +24,7 @@ function verify(elem, message, condition) {
 }
 
 function checkDOB() {
-  let birthDate = new Date(dob.value),
-    today = new Date(),
-    age = today.getFullYear() - birthDate.getFullYear();
-
-  if (
-    today.getMonth() < birthDate.getMonth() ||
-    (today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate())
-  ) {
-    age--;
-  }
-
+  let age = new Date().getFullYear() - new Date(dob.value).getFullYear();
   return age >= 18 && age <= 55;
 }
 
@@ -45,22 +35,24 @@ const messages = {
   tc: "You must agree to the terms and conditions",
 };
 
-username.addEventListener("input", () => {
+username.addEventListener("input", (e) => {
+  e.preventDefault();
   verify(username, messages.name, username.value.length < 3);
 });
 
-email.addEventListener("input", () => {
+email.addEventListener("input", (e) => {
+  e.preventDefault();
   verify(email, messages.email, !(email.value.includes("@") && email.value.includes(".")));
 });
 
-dob.addEventListener("input", () => {
+dob.addEventListener("input", (e) => {
+  e.preventDefault();
   verify(dob, messages.dob, !checkDOB());
 });
 
-tc.addEventListener("change", () => {
-  if (!tc.checked) {
-    alert(messages.tc);
-  }
+tc.addEventListener("input", (e) => {
+  e.preventDefault();
+  verify(tc, messages.tc, !tc.checked);
 });
 
 function makeObject() {
@@ -74,41 +66,34 @@ function makeObject() {
 }
 
 function displayTable() {
-  let table = element("user-table"),
-    str = `<tr>
-             <th>Name</th>
-             <th>Email</th>
-             <th>Password</th>
-             <th>Dob</th>
-             <th>Accepted terms?</th>
-           </tr>\n`;
+  let table = element("user-table");
+  let str = `<tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Password</th>
+                <th>Dob</th>
+                <th>Accepted terms?</th>
+             </tr>\n`;
 
-  if (user_entries.length > 0) {
-    user_entries.forEach((entry) => {
-      str += `<tr>
+  user_entries.forEach((entry) => {
+    str += `<tr>
                 <td>${entry.name}</td>
                 <td>${entry.email}</td>
                 <td>${entry.password}</td>
                 <td>${entry.dob}</td>
-                <td>${entry.checked ? "Yes" : "No"}</td>
-              </tr>\n`;
-    });
-  } else {
-    str += `<tr><td colspan="5" style="text-align:center;">No entries found</td></tr>`;
-  }
+                <td>${entry.checked}</td>
+            </tr>\n`;
+  });
 
   table.innerHTML = str;
 }
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
-  if (tc.checked && checkDOB()) {
+  if (tc.checked) {
     user_entries.push(makeObject());
     localStorage.setItem("user_entries", JSON.stringify(user_entries));
     displayTable();
-    form.reset();
-  } else {
-    alert("Please fix errors before submitting.");
   }
 });
 
