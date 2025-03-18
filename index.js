@@ -20,16 +20,19 @@ const setMinMaxForDob = () => {
 };
 
 const isValidEmail = (email) => {
-  const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  email = email.trim().toLowerCase();
+  const emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return emailPattern.test(email);
 };
 
 const isValidAge = (dob) => {
   const today = new Date();
   const minDate = new Date(today.getFullYear() - 55, today.getMonth(), today.getDate());
+  minDate.setHours(0, 0, 0, 0);
   const maxDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+  maxDate.setHours(0, 0, 0, 0);
   const birthDate = new Date(dob);
-  
+  birthDate.setHours(0, 0, 0, 0);
   return birthDate <= maxDate && birthDate >= minDate;
 };
 
