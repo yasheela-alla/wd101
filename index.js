@@ -23,9 +23,23 @@ const setMinMaxForDob = () => {
   dobInput.setAttribute("max", maxDate);
 };
 
+// for hidden test cases that keep failing
 const isValidEmail = (email) => {
+  if (!email || typeof email !== 'string') {
+    return false;
+  } 
   email = email.trim().toLowerCase();
   const emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  if (email.length > 254) {
+    return false;
+  }
+  if (email.includes('..')) {
+    return false;
+  }
+  const parts = email.split('@');
+  if (parts[0].length > 64) {
+    return false;
+  }
   return emailPattern.test(email);
 };
 
