@@ -43,6 +43,28 @@ const isValidEmail = (email) => {
   return emailPattern.test(email);
 };
 
+const isValidAge = (dob) => {
+  if (!dob) return false;
+  
+  const birthDate = new Date(dob);
+  // Handle invalid dates
+  if (isNaN(birthDate.getTime())) return false;
+  
+  const today = new Date();
+  
+  // Calculate age
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDifference = today.getMonth() - birthDate.getMonth();
+  
+  // Adjust age if birthday hasn't occurred yet this year
+  if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  
+  // Check if age is between 18 and 55 (inclusive)
+  return age >= 18 && age <= 55;
+};
+
 const addUserToEntriesTable = (user) => {
   const tableContent = `
         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${user.name}</td>
@@ -86,23 +108,31 @@ const validateForm = () => {
   // Validate email
   if (!isValidEmail(emailInput.value)) {
     isValid = false;
+    alert("Invalid email address!");
+    return false;
   }
   
-  // Validate DOB (within range)
-  const selectedDate = new Date(dobInput.value);
-  const minDate = new Date(dobInput.getAttribute("min"));
-  const maxDate = new Date(dobInput.getAttribute("max"));
-  
-  if (!dobInput.value || selectedDate < minDate || selectedDate > maxDate) {
+  // Validate DOB (within range) - using our more robust age validation function
+  if (!isValidAge(dobInput.value)) {
     isValid = false;
+    alert("Applicants must be between 18 and 55 years old!");
+    return false;
   }
+  
+  // Check that terms are accepted
+  if (!termsInput.checked) {
+    isValid = false;
+    alert("You must accept the terms and conditions!");
+    return false;
+  }
+  
+  return isValid;
 };
 
 const onFormSubmit = (e) => {
   e.preventDefault();
   
   if (!validateForm()) {
-    alert("Please fill all required fields correctly");
     return;
   }
   
@@ -128,3 +158,6 @@ const setupForm = () => {
   }
   populateInitialUsersInEntriesTable();
 };
+
+// Call setupForm when document is ready
+document.addEventListener("DOMContentLoaded", setupForm);
