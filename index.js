@@ -6,7 +6,7 @@ const dobInput = document.getElementById("dob");
 const termsInput = document.getElementById("tac");
 const entriesTable = document.getElementById("user-entries");
 
-// Improved date validation using the code you suggested
+// Improved date validation
 const setupDateValidation = () => {
   const today = new Date();
   const minAge = 18;
@@ -16,16 +16,19 @@ const setupDateValidation = () => {
   const minDate = new Date(today.getFullYear() - maxAge, today.getMonth(), today.getDate());
   const maxDate = new Date(today.getFullYear() - minAge, today.getMonth(), today.getDate());
   
-  // Set attributes for HTML5 validation
-  dobInput.setAttribute('min', minDate.toISOString().split('T')[0]);
-  dobInput.setAttribute('max', maxDate.toISOString().split('T')[0]);
-  
-  // Add change event listener for immediate feedback
-  dobInput.addEventListener('change', function() {
-    const selectedDate = new Date(this.value);
-    if (selectedDate < minDate || selectedDate > maxDate) {
-      alert('Date of birth must be between ages 18 and 55.');
-      this.value = ''; // Clear the input field
+  dobInput.addEventListener('blur', function() {
+    if (this.value) {
+      const selectedDate = new Date(this.value);
+      
+      if (isNaN(selectedDate.getTime())) {
+        alert('Please enter a valid date.');
+        return;
+      }
+      
+      if (selectedDate < minDate || selectedDate > maxDate) {
+        alert('Date of birth must be between ages 18 and 55.');
+        this.value = ''; // Clear the input field
+      }
     }
   });
 };
@@ -36,9 +39,16 @@ const isValidEmail = (email) => {
   return emailPattern.test(email);
 };
 
+// Improved age validation 
 const isValidAge = (dob) => {
+  if (!dob) return false;
+  
   const today = new Date();
   const birthDate = new Date(dob);
+  
+  // Check if date is valid
+  if (isNaN(birthDate.getTime())) return false;
+  
   birthDate.setHours(0, 0, 0, 0);
   
   let age = today.getFullYear() - birthDate.getFullYear();
@@ -101,7 +111,7 @@ const onFormSubmit = (e) => {
     return;
   }
   
-  // Double-check age validation during form submission
+  // Double-check age 
   if (!isValidAge(dob)) {
     alert("Applicants must be between 18 and 55 years old!");
     return;
