@@ -6,31 +6,21 @@ const dobInput = document.getElementById("dob");
 const termsInput = document.getElementById("tac");
 const entriesTable = document.getElementById("user-entries");
 
-// Improved date validation
-const setupDateValidation = () => {
+const setMinMaxForDob = () => {
   const today = new Date();
-  const minAge = 18;
-  const maxAge = 55;
-  
-  // Calculate min and max dates based on age limits
-  const minDate = new Date(today.getFullYear() - maxAge, today.getMonth(), today.getDate());
-  const maxDate = new Date(today.getFullYear() - minAge, today.getMonth(), today.getDate());
-  
-  dobInput.addEventListener('blur', function() {
-    if (this.value) {
-      const selectedDate = new Date(this.value);
-      
-      if (isNaN(selectedDate.getTime())) {
-        alert('Please enter a valid date.');
-        return;
-      }
-      
-      if (selectedDate < minDate || selectedDate > maxDate) {
-        alert('Date of birth must be between ages 18 and 55.');
-        this.value = ''; // Clear the input field
-      }
-    }
-  });
+  const minDate = new Date(
+    `${today.getFullYear() - 55}-${today.getMonth() + 1}-${today.getDate()}`
+  )
+    .toISOString()
+    .slice(0, 10);
+  const maxDate = new Date(
+    `${today.getFullYear() - 18}-${today.getMonth() + 1}-${today.getDate()}`
+  )
+    .toISOString()
+    .slice(0, 10);
+
+  dobInput.setAttribute("min", minDate);
+  dobInput.setAttribute("max", maxDate);
 };
 
 const isValidEmail = (email) => {
@@ -39,36 +29,13 @@ const isValidEmail = (email) => {
   return emailPattern.test(email);
 };
 
-// Improved age validation 
-const isValidAge = (dob) => {
-  if (!dob) return false;
-  
-  const today = new Date();
-  const birthDate = new Date(dob);
-  
-  // Check if date is valid
-  if (isNaN(birthDate.getTime())) return false;
-  
-  birthDate.setHours(0, 0, 0, 0);
-  
-  let age = today.getFullYear() - birthDate.getFullYear();
-  const monthDiff = today.getMonth() - birthDate.getMonth();
-  
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-    age--;
-  }
-  
-  return age >= 18 && age <= 55;
-};
-
 const addUserToEntriesTable = (user) => {
   const tableContent = `
-        <td>${user.name}</td>
-        <td>${user.email}</td>
-        <td>${user.password}</td>
-        <td>${user.dob}</td>
-        <td>true</td>
-    `;
+        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${user.name}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.email}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.password}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.dob}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">true</td>`;
   const tableRow = document.createElement("tr");
   tableRow.innerHTML = tableContent;
   
@@ -105,23 +72,6 @@ const onFormSubmit = (e) => {
   const email = emailInput.value;
   const password = passwordInput.value;
   const dob = dobInput.value;
-  
-  if (!isValidEmail(email)) {
-    alert("Invalid email address!");
-    return;
-  }
-  
-  // Double-check age 
-  if (!isValidAge(dob)) {
-    alert("Applicants must be between 18 and 55 years old!");
-    return;
-  }
-  
-  if (!termsInput.checked) {
-    alert("You must accept the terms and conditions!");
-    return;
-  }
-  
   const user = { name, email, password, dob };
   addUserToLocalStorage(user);
   addUserToEntriesTable(user);
@@ -130,6 +80,3 @@ const onFormSubmit = (e) => {
 
 setupDateValidation();
 populateInitialUsersInEntriesTable();
-
-// Connect the form submission handler
-document.getElementById("registration-form").addEventListener("submit", onFormSubmit);
