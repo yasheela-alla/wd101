@@ -8,7 +8,7 @@ const entriesTable = document.getElementById("user-entries");
 
 const setMinMaxForDob = () => {
   const today = new Date();
-  const minDate = new Date(today.getFullYear() - 55, today.getMonth(), today.getDate())
+  const minDate = new Date(today.getFullYear() - 65, today.getMonth(), today.getDate())
     .toISOString()
     .slice(0, 10);
   const maxDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate())
