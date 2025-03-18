@@ -8,22 +8,22 @@ const entriesTable = document.getElementById("user-entries");
 
 const setMinMaxForDob = () => {
   const today = new Date();
-  const minDate = new Date(
-    `${today.getFullYear() - 55}-${today.getMonth() + 1}-${today.getDate()}`
-  )
-    .toISOString()
-    .slice(0, 10);
-  const maxDate = new Date(
-    `${today.getFullYear() - 18}-${today.getMonth() + 1}-${today.getDate()}`
-  )
-    .toISOString()
-    .slice(0, 10);
-
-  dobInput.setAttribute("min", minDate);
-  dobInput.setAttribute("max", maxDate);
+  
+  // For minimum date (oldest allowed - 55 years ago)
+  const minDate = new Date();
+  minDate.setFullYear(today.getFullYear() - 55);
+  const formattedMinDate = minDate.toISOString().split('T')[0];
+  
+  // For maximum date (youngest allowed - 18 years ago)
+  const maxDate = new Date();
+  maxDate.setFullYear(today.getFullYear() - 18);
+  const formattedMaxDate = maxDate.toISOString().split('T')[0];
+  
+  // Set the attributes on the input element
+  dobInput.setAttribute("min", formattedMinDate);
+  dobInput.setAttribute("max", formattedMaxDate);
 };
 
-// for hidden test cases that keep failing
 const isValidEmail = (email) => {
   if (!email || typeof email !== 'string') {
     return false;
@@ -49,7 +49,7 @@ const addUserToEntriesTable = (user) => {
         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.email}</td>
         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.password}</td>
         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.dob}</td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">true</td>`;
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.terms ? "true" : "false"}</td>`;
   const tableRow = document.createElement("tr");
   tableRow.innerHTML = tableContent;
   
@@ -80,17 +80,51 @@ const clearForm = () => {
   termsInput.checked = false;
 };
 
+const validateForm = () => {
+  let isValid = true;
+  
+  // Validate email
+  if (!isValidEmail(emailInput.value)) {
+    isValid = false;
+  }
+  
+  // Validate DOB (within range)
+  const selectedDate = new Date(dobInput.value);
+  const minDate = new Date(dobInput.getAttribute("min"));
+  const maxDate = new Date(dobInput.getAttribute("max"));
+  
+  if (!dobInput.value || selectedDate < minDate || selectedDate > maxDate) {
+    isValid = false;
+  }
+};
+
 const onFormSubmit = (e) => {
   e.preventDefault();
-  const name = nameInput.value;
-  const email = emailInput.value;
+  
+  if (!validateForm()) {
+    alert("Please fill all required fields correctly");
+    return;
+  }
+  
+  const name = nameInput.value.trim();
+  const email = emailInput.value.trim();
   const password = passwordInput.value;
   const dob = dobInput.value;
-  const user = { name, email, password, dob };
+  const terms = termsInput.checked;
+  
+  const user = { name, email, password, dob, terms };
+  
   addUserToLocalStorage(user);
   addUserToEntriesTable(user);
   clearForm();
 };
 
-setupDateValidation();
-populateInitialUsersInEntriesTable();
+// Function to initialize the form
+const setupForm = () => {
+  setMinMaxForDob();
+  const form = document.querySelector("form");
+  if (form) {
+    form.addEventListener("submit", onFormSubmit);
+  }
+  populateInitialUsersInEntriesTable();
+};
