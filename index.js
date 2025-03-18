@@ -1,5 +1,4 @@
 const LOCAL_KEY = "user-entries";
-
 const nameInput = document.getElementById("name");
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
@@ -26,16 +25,12 @@ const isValidEmail = (email) => {
 };
 
 const isValidAge = (dob) => {
-  const birthDate = new Date(dob);
   const today = new Date();
-  let age = today.getFullYear() - birthDate.getFullYear();
-  const monthDiff = today.getMonth() - birthDate.getMonth();
+  const minDate = new Date(today.getFullYear() - 55, today.getMonth(), today.getDate());
+  const maxDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+  const birthDate = new Date(dob);
   
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-    age--;
-  }
-  
-  return age >= 18 && age <= 55;
+  return birthDate <= maxDate && birthDate >= minDate;
 };
 
 const addUserToEntriesTable = (user) => {
@@ -78,22 +73,18 @@ const clearForm = () => {
 
 const onFormSubmit = (e) => {
   e.preventDefault();
-
   const name = nameInput.value;
   const email = emailInput.value;
   const password = passwordInput.value;
   const dob = dobInput.value;
-
   if (!isValidEmail(email)) {
     alert("Invalid email address!");
     return;
   }
-
   if (!isValidAge(dob)) {
     alert("Applicants must be between 18 and 55 years old!");
     return;
   }
-
   const user = { name, email, password, dob };
   addUserToLocalStorage(user);
   addUserToEntriesTable(user);
