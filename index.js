@@ -3,15 +3,11 @@ document.addEventListener("DOMContentLoaded", function() {
   
   // Calculate valid date range based on age requirements (18-55)
   const currentDate = new Date();
-  
-  // Calculate youngest allowed (18 years ago)
   const youngestDate = new Date();
   youngestDate.setFullYear(currentDate.getFullYear() - 18);
-  
-  // Calculate oldest allowed (55 years ago)
   const oldestDate = new Date();
   oldestDate.setFullYear(currentDate.getFullYear() - 55);
-
+  
   const minDateString = oldestDate.toISOString().split("T")[0];
   const maxDateString = youngestDate.toISOString().split("T")[0];
   
@@ -20,24 +16,28 @@ document.addEventListener("DOMContentLoaded", function() {
   dobElement.setAttribute("max", maxDateString);
 });
 
+// Get stored entries from localStorage
 function getEntries() {
   const entriesJson = localStorage.getItem("user-entries");
   return entriesJson ? JSON.parse(entriesJson) : [];
 }
 
 let userEntries = getEntries();
+
+// Display entries in the table
 function displayEntries() {
   const entriesTable = document.getElementById("user-entries");
+  const tbody = entriesTable.querySelector("tbody");
   
   if (!userEntries.length) {
-    entriesTable.querySelector("tbody").innerHTML = `
+    tbody.innerHTML = `
       <tr>
         <td colspan="5" class="px-6 py-4 text-center text-gray-500">No entries yet</td>
       </tr>
     `;
     return;
   }
-
+  
   const tableContent = userEntries.map(entry => `
     <tr>
       <td class="px-6 py-4 whitespace-nowrap text-center">${entry.name}</td>
@@ -49,7 +49,7 @@ function displayEntries() {
   `).join('');
   
   // Update the table
-  entriesTable.querySelector("tbody").innerHTML = tableContent;
+  tbody.innerHTML = tableContent;
 }
 
 // Form submission handler
@@ -70,7 +70,7 @@ function onFormSubmit(event) {
     return;
   }
   
-  // Validate age 
+  // Validate age
   const birthDate = new Date(dobValue);
   const today = new Date();
   
@@ -101,9 +101,12 @@ function onFormSubmit(event) {
   // Add to entries array
   userEntries.push(newEntry);
   localStorage.setItem("user-entries", JSON.stringify(userEntries));
+  
   displayEntries();
   event.target.reset();
 }
 
 // Initialize the table when page loads
-displayEntries();
+document.addEventListener("DOMContentLoaded", function() {
+  displayEntries();
+});
