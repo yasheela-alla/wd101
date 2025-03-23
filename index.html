@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registration Form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body class="bg-gray-50 flex flex-col items-center justify-center min-h-screen">
+    <div class="bg-white rounded-xl shadow-md w-full max-w-md p-8 my-8">
+      <h2 class="text-center text-3xl font-semibold text-gray-800 mb-6">
+        Registration Form
+      </h2>
+      <form class="space-y-6" action="#" onsubmit="onFormSubmit(event)">
+        <div>
+          <label for="name" class="block text-gray-700 text-sm font-bold mb-2">
+            <i class="fas fa-user mr-2"></i> Name
+          </label>
+          <input
+            id="name"
+            required
+            class="shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-300"
+            placeholder="Enter your Name"
+          />
+        </div>
+
+        <div>
+          <label for="email" class="block text-gray-700 text-sm font-bold mb-2">
+            <i class="fas fa-envelope mr-2"></i> Email
+          </label>
+          <input
+            id="email"
+            type="email"
+            required
+            class="shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-300"
+            placeholder="Enter Your Email"
+          />
+        </div>
+
+        <div>
+          <label for="password" class="block text-gray-700 text-sm font-bold mb-2">
+            <i class="fas fa-lock mr-2"></i> Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            required
+            class="shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-300"
+            placeholder="Enter a password"
+          />
+        </div>
+
+        <div>
+          <label for="dob" class="block text-gray-700 text-sm font-bold mb-2">
+            <i class="fas fa-calendar-alt mr-2"></i> Date of Birth
+          </label>
+          <input
+            id="dob"
+            type="date"
+            required
+            class="shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-300"
+          />
+        </div>
+
+        <div class="flex items-center">
+          <input id="acceptTerms" type="checkbox" required class="mr-2 leading-tight" />
+          <label for="acceptTerms" class="text-sm text-gray-600">
+            I agree to the Terms and Conditions
+          </label>
+        </div>
+
+        <div>
+          <button
+            type="submit"
+            class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded focus:outline-none focus:shadow-outline"
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div
+      class="bg-white rounded-xl shadow-md w-full max-w-4xl p-8 mb-8 overflow-x-auto"
+    >
+      <h2 class="text-center text-3xl font-semibold text-gray-800 mb-6">
+        Entries
+      </h2>
+      <table id="user-entries" class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th
+              scope="col"
+              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Name
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Email
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Password
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Dob
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Accepted terms?
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <!-- User entries will be dynamically added here -->
+        </tbody>
+      </table>
+    </div>
+
+    <script src="./index.js"></script>
+  </body>
+</html>
