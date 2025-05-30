@@ -4,14 +4,16 @@ document.addEventListener("DOMContentLoaded", function () {
   const emailElement = document.getElementById("email");
 
   // Set min/max attributes for DOB (18–55 years)
-  const currentDate = new Date();
-  const youngestDate = new Date();
-  youngestDate.setFullYear(currentDate.getFullYear() - 18);
-  const oldestDate = new Date();
-  oldestDate.setFullYear(currentDate.getFullYear() - 55);
+  const today = new Date();
+  
+  // For minimum age (55 years): someone born 56 years ago would be too old
+  const minAgeDate = new Date(today.getFullYear() - 56, today.getMonth(), today.getDate());
+  
+  // For maximum age (18 years): someone born 18 years ago today would be exactly 18
+  const maxAgeDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
 
-  const minDateString = oldestDate.toISOString().split("T")[0];
-  const maxDateString = youngestDate.toISOString().split("T")[0];
+  const minDateString = minAgeDate.toISOString().split("T")[0];
+  const maxDateString = maxAgeDate.toISOString().split("T")[0];
 
   dobElement.setAttribute("min", minDateString);
   dobElement.setAttribute("max", maxDateString);
@@ -46,18 +48,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const inputDate = new Date(element.value);
     const today = new Date();
     
-    // Calculate age more accurately
-    let age = today.getFullYear() - inputDate.getFullYear();
-    const monthDiff = today.getMonth() - inputDate.getMonth();
+    // Calculate dates for 18 and 55 years ago (same logic as friend's code)
+    const minAgeDate = new Date(today.getFullYear() - 56, today.getMonth(), today.getDate());
+    const maxAgeDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
     
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < inputDate.getDate())) {
-      age--;
-    }
-
-    if (age < 18 || age > 55) {
+    // Check if date is between 18 and 55 years ago
+    if (inputDate > maxAgeDate || inputDate <= minAgeDate) {
       element.setCustomValidity("Age must be between 18 and 55 years");
       return false;
     }
+    
     return true;
   }
 
