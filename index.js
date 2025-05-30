@@ -123,13 +123,8 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    if (!termsAccepted) {
-      document.getElementById("acceptTerms").setCustomValidity("You must accept the terms");
-      document.getElementById("acceptTerms").reportValidity();
-      return;
-    } else {
-      document.getElementById("acceptTerms").setCustomValidity("");
-    }
+    // Removed mandatory validation for acceptTerms
+    document.getElementById("acceptTerms").setCustomValidity(""); // Clear any previous validation
 
     // Create entry object
     const newEntry = {
@@ -137,7 +132,7 @@ document.addEventListener("DOMContentLoaded", function () {
       email: emailValue,
       password: passwordValue,
       date: dobValue,
-      acceptTerms: termsAccepted,
+      acceptTerms: termsAccepted, // Store true/false based on checkbox state
     };
 
     // Add to entries array
