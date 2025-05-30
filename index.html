@@ -19,13 +19,14 @@
       <h2 class="text-center text-3xl font-semibold text-gray-800 mb-6">
         Registration Form
       </h2>
-      <form class="space-y-6" action="#" onsubmit="onFormSubmit(event)">
+      <form id="registrationForm" class="space-y-6" action="#">
         <div>
           <label for="name" class="block text-gray-700 text-sm font-bold mb-2">
             <i class="fas fa-user mr-2"></i> Name
           </label>
           <input
             id="name"
+            type="text"
             required
             class="shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-300"
             placeholder="Enter your Name"
@@ -71,7 +72,7 @@
         </div>
 
         <div class="flex items-center">
-          <input id="acceptTerms" type="checkbox" required class="mr-2 leading-tight" />
+          <input id="acceptTerms" type="checkbox" class="mr-2 leading-tight" />
           <label for="acceptTerms" class="text-sm text-gray-600">
             I agree to the Terms and Conditions
           </label>
@@ -129,7 +130,7 @@
             </th>
           </tr>
         </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
+        <tbody id="userTableBody" class="bg-white divide-y divide-gray-200">
           <!-- User entries will be dynamically added here -->
         </tbody>
       </table>
