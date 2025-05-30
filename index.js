@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Validate email on input
   emailElement.addEventListener("input", () => validateEmail(emailElement));
+  
   function validateEmail(element) {
     element.setCustomValidity(""); // Clear previous validation
     if (!element.value.trim()) {
@@ -34,18 +35,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Validate DOB on input
   dobElement.addEventListener("input", () => validateDOB(dobElement));
+  
   function validateDOB(element) {
     element.setCustomValidity(""); // Clear previous validation
     if (!element.value) {
       element.setCustomValidity("Date of Birth is required");
       return false;
     }
+    
     const inputDate = new Date(element.value);
     const today = new Date();
-    const minAgeDate = new Date(today.getFullYear() - 55, today.getMonth(), today.getDate());
-    const maxAgeDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+    
+    // Calculate age more accurately
+    let age = today.getFullYear() - inputDate.getFullYear();
+    const monthDiff = today.getMonth() - inputDate.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < inputDate.getDate())) {
+      age--;
+    }
 
-    if (inputDate > maxAgeDate || inputDate <= minAgeDate) {
+    if (age < 18 || age > 55) {
       element.setCustomValidity("Age must be between 18 and 55 years");
       return false;
     }
@@ -101,10 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const dobValue = document.getElementById("dob").value;
     const termsAccepted = document.getElementById("acceptTerms").checked;
 
-    // Validate inputs
-    const isEmailValid = validateEmail(emailElement);
-    const isDOBValid = validateDOB(dobElement);
-
+    // Validate name
     if (!nameValue.trim()) {
       document.getElementById("name").setCustomValidity("Name is required");
       document.getElementById("name").reportValidity();
@@ -113,18 +119,28 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("name").setCustomValidity("");
     }
 
+    // Validate email
+    const isEmailValid = validateEmail(emailElement);
     if (!isEmailValid) {
       emailElement.reportValidity();
       return;
     }
 
+    // Validate password
+    if (!passwordValue.trim()) {
+      document.getElementById("password").setCustomValidity("Password is required");
+      document.getElementById("password").reportValidity();
+      return;
+    } else {
+      document.getElementById("password").setCustomValidity("");
+    }
+
+    // Validate DOB
+    const isDOBValid = validateDOB(dobElement);
     if (!isDOBValid) {
       dobElement.reportValidity();
       return;
     }
-
-    // Removed mandatory validation for acceptTerms
-    document.getElementById("acceptTerms").setCustomValidity(""); // Clear any previous validation
 
     // Create entry object
     const newEntry = {
